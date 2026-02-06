@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f39c12">
+    <title>TimerPro - Multi Timer</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .developer {
+            opacity: 0.9;
+        }
+
+        .quick-timers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quick-timer-btn {
+            background: white;
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .quick-timer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .quick-timer-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .quick-timer-label {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .custom-timer {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .custom-timer h2 {
+            color: #f39c12;
+            margin-bottom: 20px;
+        }
+
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .time-input-group {
+            text-align: center;
+        }
+
+        .time-input-group label {
+            display: block;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .time-input-group input {
+            width: 80px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.5em;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .time-input-group input:focus {
+            outline: none;
+            border-color: #f39c12;
+        }
+
+        .start-custom {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .start-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+        }
+
+        .active-timers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .timer-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .timer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .timer-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .timer-delete {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timer-delete:hover {
+            background: #c0392b;
+        }
+
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            color: #f39c12;
+            margin: 20px 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-progress {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .timer-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            transition: width 0.3s;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .timer-controls button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .timer-controls button:hover {
+            background: #2980b9;
+        }
+
+        .timer-controls button.danger {
+            background: #e74c3c;
+        }
+
+        .timer-controls button.danger:hover {
+            background: #c0392b;
+        }
+
+        .timer-finished {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .quick-timers {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .time-inputs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .timer-display {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⏱️ TimerPro</h1>
+            <div class="developer">by vDig</div>
+        </header>
+
+        <div class="quick-timers">
+            <button class="quick-timer-btn" onclick="startQuickTimer(60, 'Coffee Break')">
+                <div class="quick-timer-icon">☕</div>
+                <div class="quick-timer-label">1 Min</div>
+            </button>
+            <button class="quick-timer-btn" onclick="startQuickTimer(300, 'Quick Task')">
+                <div class="quick-timer-icon">⚡</div>
+                <div class="quick-timer-label">5 Min</div>
+            </button>
+            <button class="quick-timer-btn" onclick="startQuickTimer(600, 'Short Break')">
+                <div class="quick-timer-icon">🎯</div>
+                <div class="quick-timer-label">10 Min</div>
+            </button>
+            <button class="quick-timer-btn" onclick="startQuickTimer(1500, 'Pomodoro')">
+                <div class="quick-timer-icon">🍅</div>
+                <div class="quick-timer-label">25 Min</div>
+            </button>
+        </div>
+
+        <div class="custom-timer">
+            <h2>⚙️ Custom Timer</h2>
+            <div class="time-inputs">
+                <div class="time-input-group">
+                    <label>Hours</label>
+                    <input type="number" id="hours" min="0" max="23" value="0">
+                </div>
+                <div class="time-input-group">
+                    <label>Minutes</label>
+                    <input type="number" id="minutes" min="0" max="59" value="5">
+                </div>
+                <div class="time-input-group">
+                    <label>Seconds</label>
+                    <input type="number" id="seconds" min="0" max="59" value="0">
+                </div>
+            </div>
+            <button class="start-custom" onclick="startCustomTimer()">
+                Start Custom Timer
+            </button>
+        </div>
+
+        <div class="active-timers" id="activeTimers">
+            <!-- Active timers will appear here -->
+        </div>
+    </div>
+
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+
+        // Timers array
+        let timers = [];
+        let timerIntervals = {};
+
+        // Start quick timer
+        function startQuickTimer(seconds, label) {
+            createTimer(seconds, label);
+        }
+
+        // Start custom timer
+        function startCustomTimer() {
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('seconds').value) || 0;
+            
+            const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+            
+            if (totalSeconds === 0) {
+                alert('Please set a time greater than 0');
+                return;
+            }
+            
+            const label = `${hours}h ${minutes}m ${seconds}s`;
+            createTimer(totalSeconds, label);
+            
+            // Reset inputs
+            document.getElementById('hours').value = 0;
+            document.getElementById('minutes').value = 5;
+            document.getElementById('seconds').value = 0;
+        }
+
+        // Create timer
+        function createTimer(duration, label) {
+            const timer = {
+                id: Date.now(),
+                label: label,
+                duration: duration,
+                remaining: duration,
+                paused: false,
+                finished: false
+            };
+            
+            timers.push(timer);
+            renderTimers();
+            startTimer(timer.id);
+        }
+
+        // Start timer countdown
+        function startTimer(id) {
+            if (timerIntervals[id]) return;
+            
+            timerIntervals[id] = setInterval(() => {
+                const timer = timers.find(t => t.id === id);
+                if (!timer || timer.paused) return;
+                
+                timer.remaining--;
+                
+                if (timer.remaining <= 0) {
+                    timer.remaining = 0;
+                    timer.finished = true;
+                    clearInterval(timerIntervals[id]);
+                    delete timerIntervals[id];
+                    playNotification();
+                }
+                
+                renderTimers();
+            }, 1000);
+        }
+
+        // Pause timer
+        function pauseTimer(id) {
+            const timer = timers.find(t => t.id === id);
+            if (timer) {
+                timer.paused = true;
+                renderTimers();
+            }
+        }
+
+        // Resume timer
+        function resumeTimer(id) {
+            const timer = timers.find(t => t.id === id);
+            if (timer) {
+                timer.paused = false;
+                startTimer(id);
+                renderTimers();
+            }
+        }
+
+        // Reset timer
+        function resetTimer(id) {
+            const timer = timers.find(t => t.id === id);
+            if (timer) {
+                timer.remaining = timer.duration;
+                timer.paused = false;
+                timer.finished = false;
+                if (timerIntervals[id]) {
+                    clearInterval(timerIntervals[id]);
+                    delete timerIntervals[id];
+                }
+                startTimer(id);
+                renderTimers();
+            }
+        }
+
+        // Delete timer
+        function deleteTimer(id) {
+            if (timerIntervals[id]) {
+                clearInterval(timerIntervals[id]);
+                delete timerIntervals[id];
+            }
+            timers = timers.filter(t => t.id !== id);
+            renderTimers();
+        }
+
+        // Format time
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            
+            const parts = [];
+            if (h > 0) parts.push(h.toString().padStart(2, '0'));
+            parts.push(m.toString().padStart(2, '0'));
+            parts.push(s.toString().padStart(2, '0'));
+            
+            return parts.join(':');
+        }
+
+        // Render timers
+        function renderTimers() {
+            const container = document.getElementById('activeTimers');
+            
+            if (timers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⏱️</div>
+                        <h3>No active timers</h3>
+                        <p>Start a quick timer or create a custom one</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = timers.map(timer => {
+                const progress = ((timer.duration - timer.remaining) / timer.duration) * 100;
+                
+                return `
+                    <div class="timer-card ${timer.finished ? 'timer-finished' : ''}">
+                        <div class="timer-header">
+                            <div class="timer-label">${timer.label}</div>
+                            <button class="timer-delete" onclick="deleteTimer(${timer.id})">
+                                ×
+                            </button>
+                        </div>
+                        <div class="timer-display">
+                            ${formatTime(timer.remaining)}
+                        </div>
+                        <div class="timer-progress">
+                            <div class="timer-progress-bar" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="timer-controls">
+                            ${timer.finished ? `
+                                <button onclick="resetTimer(${timer.id})">
+                                    🔄 Reset
+                                </button>
+                            ` : timer.paused ? `
+                                <button onclick="resumeTimer(${timer.id})">
+                                    ▶️ Resume
+                                </button>
+                                <button onclick="resetTimer(${timer.id})">
+                                    🔄 Reset
+                                </button>
+                            ` : `
+                                <button onclick="pauseTimer(${timer.id})">
+                                    ⏸️ Pause
+                                </button>
+                                <button class="danger" onclick="resetTimer(${timer.id})">
+                                    🔄 Reset
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Play notification sound (visual only in this demo)
+        function playNotification() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            
+            // Show browser notification if permitted
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('TimerPro', {
+                    body: 'Timer finished!',
+                    icon: 'icon-192.png',
+                    badge: 'icon-192.png'
+                });
+            }
+        }
+
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+
+        // Initialize
+        renderTimers();
+    </script>
+</body>
+</html>

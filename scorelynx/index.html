@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2c3e50">
+    <title>ScoreLynx - Live Sports Scores</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            color: #ecf0f1;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .developer {
+            color: #3498db;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(52, 73, 94, 0.8);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2ecc71;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background: #e74c3c;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .last-update {
+            font-size: 0.85em;
+            color: #95a5a6;
+        }
+
+        .sport-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sport-tab {
+            background: rgba(52, 152, 219, 0.2);
+            border: 2px solid #3498db;
+            color: #3498db;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .sport-tab:hover {
+            background: rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .sport-tab.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .matches-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .match-card {
+            background: rgba(52, 73, 94, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            transition: all 0.3s;
+        }
+
+        .match-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.85em;
+            color: #95a5a6;
+        }
+
+        .league-name {
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .match-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .match-status.live {
+            background: #e74c3c;
+            color: white;
+            animation: blink 1.5s infinite;
+        }
+
+        .match-status.finished {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .match-status.scheduled {
+            background: #2ecc71;
+            color: white;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .match-teams {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .team {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-name {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .team-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #3498db;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .match-time {
+            margin-top: 10px;
+            text-align: center;
+            color: #95a5a6;
+            font-size: 0.9em;
+        }
+
+        .refresh-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .refresh-button:hover {
+            transform: rotate(180deg) scale(1.1);
+        }
+
+        .refresh-button:active {
+            transform: rotate(180deg) scale(0.95);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #95a5a6;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .sport-tabs {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚽ ScoreLynx</h1>
+            <div class="developer">by vDig</div>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Live Updates</span>
+            </div>
+            <div class="last-update" id="lastUpdate">
+                Never updated
+            </div>
+        </div>
+
+        <div class="sport-tabs" id="sportTabs">
+            <button class="sport-tab active" data-sport="football">⚽ Football</button>
+            <button class="sport-tab" data-sport="basketball">🏀 Basketball</button>
+            <button class="sport-tab" data-sport="tennis">🎾 Tennis</button>
+            <button class="sport-tab" data-sport="cricket">🏏 Cricket</button>
+        </div>
+
+        <div class="matches-container" id="matchesContainer">
+            <!-- Matches will be loaded here -->
+        </div>
+    </div>
+
+    <button class="refresh-button" id="refreshBtn" onclick="refreshScores()" title="Refresh Scores">
+        ↻
+    </button>
+
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+
+        // App state
+        let currentSport = 'football';
+        let cachedScores = {};
+
+        // Demo data - in a real app this would come from an API
+        const demoScores = {
+            football: [
+                {
+                    league: 'Premier League',
+                    homeTeam: 'Manchester United',
+                    awayTeam: 'Liverpool',
+                    homeScore: 2,
+                    awayScore: 2,
+                    status: 'live',
+                    time: '67\''
+                },
+                {
+                    league: 'Premier League',
+                    homeTeam: 'Arsenal',
+                    awayTeam: 'Chelsea',
+                    homeScore: 3,
+                    awayScore: 1,
+                    status: 'finished',
+                    time: 'FT'
+                },
+                {
+                    league: 'La Liga',
+                    homeTeam: 'Real Madrid',
+                    awayTeam: 'Barcelona',
+                    homeScore: 0,
+                    awayScore: 0,
+                    status: 'scheduled',
+                    time: '20:00'
+                }
+            ],
+            basketball: [
+                {
+                    league: 'NBA',
+                    homeTeam: 'LA Lakers',
+                    awayTeam: 'Boston Celtics',
+                    homeScore: 108,
+                    awayScore: 112,
+                    status: 'finished',
+                    time: 'Final'
+                },
+                {
+                    league: 'NBA',
+                    homeTeam: 'Golden State Warriors',
+                    awayTeam: 'Miami Heat',
+                    homeScore: 95,
+                    awayScore: 87,
+                    status: 'live',
+                    time: 'Q3 5:23'
+                }
+            ],
+            tennis: [
+                {
+                    league: 'ATP Finals',
+                    homeTeam: 'Novak Djokovic',
+                    awayTeam: 'Carlos Alcaraz',
+                    homeScore: 2,
+                    awayScore: 1,
+                    status: 'live',
+                    time: 'Set 4'
+                },
+                {
+                    league: 'WTA Finals',
+                    homeTeam: 'Iga Swiatek',
+                    awayTeam: 'Aryna Sabalenka',
+                    homeScore: 2,
+                    awayScore: 0,
+                    status: 'finished',
+                    time: 'Final'
+                }
+            ],
+            cricket: [
+                {
+                    league: 'Test Match',
+                    homeTeam: 'England',
+                    awayTeam: 'Australia',
+                    homeScore: 284,
+                    awayScore: 195,
+                    status: 'live',
+                    time: 'Day 2'
+                },
+                {
+                    league: 'T20 World Cup',
+                    homeTeam: 'India',
+                    awayTeam: 'Pakistan',
+                    homeScore: 178,
+                    awayScore: 165,
+                    status: 'finished',
+                    time: 'Final'
+                }
+            ]
+        };
+
+        // Initialize
+        function init() {
+            updateOnlineStatus();
+            loadCachedScores();
+            setupEventListeners();
+            displayMatches(currentSport);
+        }
+
+        // Online/Offline status
+        function updateOnlineStatus() {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            if (navigator.onLine) {
+                statusDot.classList.remove('offline');
+                statusText.textContent = 'Live Updates';
+            } else {
+                statusDot.classList.add('offline');
+                statusText.textContent = 'Offline Mode (Cached Data)';
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Setup event listeners
+        function setupEventListeners() {
+            const tabs = document.querySelectorAll('.sport-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentSport = tab.dataset.sport;
+                    displayMatches(currentSport);
+                });
+            });
+        }
+
+        // Display matches
+        function displayMatches(sport) {
+            const container = document.getElementById('matchesContainer');
+            const matches = cachedScores[sport] || demoScores[sport] || [];
+            
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🏆</div>
+                        <h3>No matches available</h3>
+                        <p>Check back later for live scores</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = matches.map(match => `
+                <div class="match-card">
+                    <div class="match-header">
+                        <span class="league-name">${match.league}</span>
+                        <span class="match-status ${match.status}">${match.status.toUpperCase()}</span>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team">
+                            <span class="team-name">${match.homeTeam}</span>
+                            <span class="team-score">${match.homeScore}</span>
+                        </div>
+                        <div class="team">
+                            <span class="team-name">${match.awayTeam}</span>
+                            <span class="team-score">${match.awayScore}</span>
+                        </div>
+                    </div>
+                    <div class="match-time">${match.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // Refresh scores
+        function refreshScores() {
+            const btn = document.getElementById('refreshBtn');
+            btn.style.transform = 'rotate(360deg)';
+            
+            setTimeout(() => {
+                // In a real app, this would fetch from an API
+                cachedScores = JSON.parse(JSON.stringify(demoScores));
+                
+                // Simulate score updates for live matches
+                Object.keys(cachedScores).forEach(sport => {
+                    cachedScores[sport].forEach(match => {
+                        if (match.status === 'live') {
+                            match.homeScore += Math.floor(Math.random() * 2);
+                            match.awayScore += Math.floor(Math.random() * 2);
+                        }
+                    });
+                });
+                
+                saveScoresToCache();
+                displayMatches(currentSport);
+                updateLastUpdateTime();
+                btn.style.transform = 'rotate(0deg)';
+            }, 500);
+        }
+
+        // Cache management
+        function saveScoresToCache() {
+            localStorage.setItem('scorelynx_cache', JSON.stringify(cachedScores));
+            localStorage.setItem('scorelynx_timestamp', Date.now().toString());
+        }
+
+        function loadCachedScores() {
+            const cached = localStorage.getItem('scorelynx_cache');
+            if (cached) {
+                cachedScores = JSON.parse(cached);
+                updateLastUpdateTime();
+            } else {
+                cachedScores = JSON.parse(JSON.stringify(demoScores));
+                saveScoresToCache();
+            }
+        }
+
+        function updateLastUpdateTime() {
+            const timestamp = localStorage.getItem('scorelynx_timestamp');
+            if (timestamp) {
+                const date = new Date(parseInt(timestamp));
+                document.getElementById('lastUpdate').textContent = 
+                    `Updated ${date.toLocaleTimeString()}`;
+            }
+        }
+
+        // Auto-refresh every 30 seconds for live matches
+        setInterval(() => {
+            if (navigator.onLine) {
+                refreshScores();
+            }
+        }, 30000);
+
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>

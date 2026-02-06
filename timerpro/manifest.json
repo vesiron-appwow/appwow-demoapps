@@ -1,0 +1,29 @@
+{
+  "name": "TimerPro - Multi Timer",
+  "short_name": "TimerPro",
+  "description": "Manage multiple timers simultaneously. Perfect for cooking, workouts, and productivity. Works offline.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f39c12",
+  "theme_color": "#f39c12",
+  "orientation": "portrait",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "developer": {
+    "name": "vDig",
+    "url": "https://vdig.dev"
+  }
+}
