@@ -2,7 +2,7 @@
   "name": "ColorMix - Palette Generator",
   "short_name": "ColorMix",
   "description": "Generate beautiful color palettes instantly. Save favorites and export CSS. Works completely offline.",
-  "start_url": "/",
+ "start_url": "/colormix/",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#ff6b6b",

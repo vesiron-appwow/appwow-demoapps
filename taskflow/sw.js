@@ -1,8 +1,8 @@
 const CACHE_NAME = 'taskflow-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/taskflow/',
+  '/taskflow/index.html',
+  '/taskflow/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {

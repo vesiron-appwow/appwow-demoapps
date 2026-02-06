@@ -2,7 +2,7 @@
   "name": "QuickCalc - Smart Calculator",
   "short_name": "QuickCalc",
   "description": "Fast and reliable calculator with history tracking. Works completely offline.",
-  "start_url": "/",
+  "start_url": "/quickcalc/",
   "display": "standalone",
   "background_color": "#1e272e",
   "theme_color": "#1e272e",

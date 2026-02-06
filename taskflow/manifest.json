@@ -2,7 +2,7 @@
   "name": "TaskFlow - Smart Todo List",
   "short_name": "TaskFlow",
   "description": "Elegant todo list with offline sync. Never lose track of your tasks.",
-  "start_url": "/",
+  "start_url": "/taskflow/",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#6c5ce7",

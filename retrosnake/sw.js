@@ -1,8 +1,8 @@
 const CACHE_NAME = 'retrosnake-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/retrosnake/',
+  '/retrosnake/index.html',
+  '/retrosnake/manifest.json'
 ];
 
 // Install service worker and cache assets

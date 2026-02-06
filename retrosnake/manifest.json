@@ -2,7 +2,7 @@
   "name": "RetroSnake - Classic Snake Game",
   "short_name": "RetroSnake",
   "description": "Classic snake game that works completely offline. Eat food, grow longer, and beat your high score!",
-  "start_url": "/",
+  "start_url": "/retrosnake/",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",

@@ -1,9 +1,9 @@
 const CACHE_NAME = 'scorelynx-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json'
-];
+  '/scorelynx/',
+  '/scorelynx/index.html',
+  '/scorelynx/manifest.json'
+];s
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

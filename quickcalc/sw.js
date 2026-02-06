@@ -1,8 +1,8 @@
 const CACHE_NAME = 'quickcalc-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/quickcalc/',
+  '/quickcalc/index.html',
+  '/quickcalc/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {

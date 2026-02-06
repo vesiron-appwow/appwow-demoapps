@@ -1,8 +1,8 @@
 const CACHE_NAME = 'timerpro-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/timerpro/',
+  '/timerpro/index.html',
+  '/timerpro/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {

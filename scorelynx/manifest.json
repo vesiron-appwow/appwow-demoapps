@@ -2,7 +2,7 @@
   "name": "ScoreLynx - Live Sports Scores",
   "short_name": "ScoreLynx",
   "description": "Track live sports scores across football, basketball, tennis, and cricket. Works offline with cached data.",
-  "start_url": "/",
+  "start_url": "/scorelynx/",
   "display": "standalone",
   "background_color": "#2c3e50",
   "theme_color": "#2c3e50",

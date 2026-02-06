@@ -2,7 +2,7 @@
   "name": "TimerPro - Multi Timer",
   "short_name": "TimerPro",
   "description": "Manage multiple timers simultaneously. Perfect for cooking, workouts, and productivity. Works offline.",
-  "start_url": "/",
+ "start_url": "/timerpro/",
   "display": "standalone",
   "background_color": "#f39c12",
   "theme_color": "#f39c12",
